@@ -23,15 +23,18 @@ Batch 1에는 과제 기준의 단수명 셀(`<500`사이클)이 존재하지 �
 │   └── README.md
 ├── notebooks/
 │   ├── 01_EDA.ipynb
-│   ├── 02_feature_engineering.ipynb  # 작성 예정
-│   └── 03_modeling.ipynb             # 작성 예정
+│   ├── 02_feature_engineering.ipynb
+│   └── 03_modeling.ipynb
 ├── src/
-│   ├── preprocess.py                 # 작성 예정
-│   ├── features.py                   # 작성 예정
-│   └── train.py                      # 작성 예정
+│   ├── __init__.py
+│   ├── preprocess.py
+│   ├── features.py
+│   └── train.py
 ├── results/
 │   ├── README.md
-│   └── model_performance.csv         # 모델링 후 생성
+│   ├── model_performance.csv
+│   ├── predictions.csv
+│   └── error_analysis.csv
 ├── requirements.txt
 └── README.md
 ```
@@ -129,22 +132,22 @@ python -m ipykernel install --user \
 
 ## 성능 결과
 
-모델 학습 후 다음 지표를 Batch별로 기록합니다.
-
 | 평가 데이터 | MAE | RMSE | MAPE | R² |
 |---|---:|---:|---:|---:|
-| Batch 1 CV | 작성 예정 | 작성 예정 | 작성 예정 | 작성 예정 |
-| Batch 2 | 작성 예정 | 작성 예정 | 작성 예정 | 작성 예정 |
-| Batch 3 | 작성 예정 | 작성 예정 | 작성 예정 | 작성 예정 |
+| Batch 1 Nested CV | 75.02 | 92.97 | 8.79% | 0.741 |
+| Batch 2 Test | 145.81 | 163.61 | 29.43% | 0.444 |
+| Batch 3 Test | 156.71 | 258.08 | 12.54% | 0.308 |
+
+Batch 1의 Nested CV에서 전처리와 `alpha` 선택을 각 학습 fold 안에서 수행했습니다. Batch 1 전체로 최종 모델을 학습할 때 선택된 Ridge `alpha`는 `0.0001`입니다.
 
 ## 오류 분석
 
-모델링 후 다음 내용을 분석합니다.
-
-- 절대 오차가 가장 큰 셀과 소속 Batch
-- 실제 수명 대비 과대·과소예측 방향
-- 충전 프로토콜, 초기 열화 신호 및 Batch 분포 차이
-- 원인 가설과 피처·모델 개선 방향
+- 가장 큰 오차는 Batch 3의 장수명 셀 `Batch 3-C38`에서 발생했습니다.
+- 실제 수명은 1,935사이클이지만 1,028사이클로 예측해 약 907사이클 과소예측했습니다.
+- Batch 3의 1,600사이클 이상 장수명 셀들이 주요 과소예측 사례로 나타났습니다.
+- Batch 2의 400사이클 전후 단수명 셀 일부는 약 270~303사이클 과대예측했습니다.
+- Batch 1의 Target 범위가 534~1,227사이클이므로 외부 Batch의 극단적인 장·단수명을 충분히 학습하지 못한 것으로 해석할 수 있습니다.
+- 선택된 `alpha`가 매우 작고 `mean_chargetime`의 표준화 계수도 작아, 현재 모델은 `log_delta_q_variance`에 대부분 의존합니다.
 
 ## ESS 도메인 해석
 
