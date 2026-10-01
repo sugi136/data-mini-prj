@@ -1,0 +1,45 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# IDE settings
+.vscode/
+.idea/
+
+# Raw battery data is several GB and must not be committed to GitHub.
+data/*
+!data/README.md
+!data/sample/
+!data/sample/**
+
+# Locally saved models and temporary outputs
+*.joblib
+*.pkl
+*.pickle
+*.log
+
+# Exploratory scratch notebook retained locally only
+/30-ESSHealth-scratch.ipynb
